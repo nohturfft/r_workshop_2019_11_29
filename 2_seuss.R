@@ -1,5 +1,5 @@
 #===============================================================================
-# PROGRAMMING WORKSHOP - PART 2: R
+# R PROGRAMMING WORKSHOP - PART 2
 #===============================================================================
 # LOADING DATA FROM FILES
 # ** reading lines of text
@@ -18,17 +18,20 @@ options(stringsAsFactors = FALSE)
 #-------------------------------------------------------------------------------
 # Working directory
 #-------------------------------------------------------------------------------
-# ** In RStudio you can set the working using the 'Session' menu >
+# ** In RStudio you can set the working directory using the 'Session' menu >
 #    'Set working directory'.
 
 # ** The best way of setting the correct working directory is to work with
 #    RStudio 'projects' (which is what we are doing for this workshop!):
 #    RStudio autmatically sets the working directory to the folder that contains
-#    the project file.
+#    the project file ending in '.Rproj'.
 #    Info: https://support.rstudio.com/hc/en-us/articles/200526207-Using-Projects
 
-# ** Usually you set the working directory programmatically using the setwd()
-#    function (the example code will not work on your screen):
+# ** You can also use the 'More' menu in the 'Files' tab of the lower right
+#    RStudio pane
+
+# ** Usually you set the working directory programmatically using the 'setwd()'
+#    function (the following example code will not work on your screen):
 setwd("~/Dropbox/SGUL_Teaching/SGUL_Workshops/2017_Programming_Workshop")
 
 # You can get the current working directory using the getwd() function:
@@ -38,40 +41,18 @@ getwd()
 list.files()
 
 #-------------------------------------------------------------------------------
-# Tell R where packages are stored:
-#-------------------------------------------------------------------------------
-# This is mostly for the purpose of this workshop; not usually done during
-# regular R work
-lib.loc <- "/homedirs8/workshops/190301-R/packages_3_5_0"
-.libPaths(lib.loc)
-
-# Show packages installed in that folder
-list.files(lib.loc)
-
-#-------------------------------------------------------------------------------
-# FOR GEEKS
-#-------------------------------------------------------------------------------
-# Consider setting up your RStudio projects with 'packrat'
-# https://rstudio.github.io/packrat/rstudio.html
-
-#-------------------------------------------------------------------------------
 # Load some packages:
 #-------------------------------------------------------------------------------
-# install.packages("wordcloud", lib=lib.loc)
-# install.packages("stringi", lib=lib.loc)
-# install.packages("knitr", lib=lib.loc)
-# install.packages("DT", lib=lib.loc)
-# install.packages("rmarkdown", lib=lib.loc)
-# install.packages("mime", lib=lib.loc)
-install.packages("base64enc", lib=lib.loc)
-library(magrittr, lib.loc=lib.loc)
+if (!require("base64enc")) install.packages("base64enc")
+if (!require("magrittr")) install.packages("magrittr")
+
 # library(wordcloud2, lib.loc=lib.loc)
-library(wordcloud, lib.loc=lib.loc)
+library(wordcloud)
 
 #-------------------------------------------------------------------------------
-# Check what packages have been installed for this workshop:
+# Check what packages have been installed:
 #-------------------------------------------------------------------------------
-installed.packages(lib.loc=lib.loc) %>% row.names()
+installed.packages() %>% row.names()
 
 
 #-------------------------------------------------------------------------------
@@ -81,9 +62,14 @@ installed.packages(lib.loc=lib.loc) %>% row.names()
 # You can select a file programmatically [e.g. by copying from the console after
 # list.files() ]
 my.file <- "data/green_eggs_and_ham.txt"
-# Or you can choose a file interactively with file.choose() :
+# Or you can choose a file interactively with the 'file.choose()' function
+# (please pick 'green_eggs_and_ham.txt' in the data folder):
 my.file <- file.choose(new=FALSE)
 print(my.file)
+
+# Some useful functions...
+basename(my.file)
+dirname(my.file)
 
 # Let's start by reading just the first 10 lines from the file (n=10)
 txt <- readLines(con=my.file, n=10)
@@ -96,7 +82,7 @@ txt
 cat(txt, sep="\n")
 
 #-------------------------------------------------------------------------------
-# Reading individual words into a vector (scan() command):
+# Reading individual words into a vector using the 'scan()' command:
 #-------------------------------------------------------------------------------
 # The approach is useful to load gene symbols!
 txt <- scan(file="data/green_eggs_and_ham.txt", what=character())
@@ -106,7 +92,7 @@ class(txt)
 # The 'length()' command return the number of items in a vector:
 length(txt) # 778
 
-# The next command is self-explanatory:
+# The following command is self-explanatory:
 unique(txt)
 
 # Sort alphabetically:
@@ -150,6 +136,9 @@ cat(txt, sep="\n", file="newfile.txt")
 # Check whether the file has really been created:
 list.files()
 
+# Clicking on the new file in the 'Files' tab will open it in R for you to
+# check.
+
 #-------------------------------------------------------------------------------
 # Counting elements in a vector:
 #-------------------------------------------------------------------------------
@@ -159,7 +148,7 @@ ta
 class(ta)
 
 # 'as.data.frame' converts the table object to an R data.frame:
-# (the dot before the comma refers to the output of the pipe)
+# (the dot before the comma refers to the output of the magrittr pipe)
 df <- txt %>% toupper %>% table %>% as.data.frame(., stringsAsFactors=FALSE)
 # Add more useful column names:
 names(df) <- c("word", "count")
@@ -181,9 +170,9 @@ View(df)
 #-------------------------------------------------------------------------------
 barplot(table(txt.lo[1:20]), horiz=TRUE, las=1)
 
-# Most people these days use the ggplot2 package to generate plots in R
+# Most people these days use the ggplot2 package to generate plots in R.
 # Just an example - ggplot2 requires an advanced workshop...
-library(ggplot2, lib.loc=lib.loc)
+if (!require(ggplot2)) install.packages("ggplot2")
 ggplot(data=head(df, 10), aes(x=word, y=count)) +
   geom_bar(stat="identity", color="black", fill="lightgreen") +
   coord_flip() +
@@ -194,6 +183,7 @@ ggplot(data=head(df, 10), aes(x=word, y=count)) +
 #-------------------------------------------------------------------------------
 # Plotting a word cloud:
 #-------------------------------------------------------------------------------
+if (!require(wordcloud2)) install.packages("wordcloud2"); library(wordcloud)
 help(wordcloud, package="wordcloud")
 set.seed(1234)
 wordcloud(words=df$word, freq=df$count)
@@ -217,14 +207,19 @@ wordcloud(words=df$word, freq=df$count, colors=brewer.pal(8, "Accent"))
 
 
 #-------------------------------------------------------------------------------
-# Save wordcloud as PDF or PNF:
+# Save wordcloud as PDF or PNG or copy to the clipboard:
 #-------------------------------------------------------------------------------
-# Click the "Export" button in the RStudio tab on the bottom right and follow
-# the instructions
+# Click the "Export" button in the RStudio 'Plots' tab on the bottom right and
+# follow the instructions.
 
 
 #-------------------------------------------------------------------------------
 # ********************************  EXERCISE!!  ********************************
 #-------------------------------------------------------------------------------
 # Create a text file with 'file.edit' and analyze your own poem or other text:
-file.edit("my_poem.txt")
+file.edit("abc.txt")
+
+# How about e.g. Boris Johnson's first speech as prime minister:
+# https://www.gov.uk/government/speeches/boris-johnsons-first-speech-as-prime-minister-24-july-2019
+
+#

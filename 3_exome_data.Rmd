@@ -25,18 +25,22 @@ h3 {color: brown;}
 With this script we'll cover:  
 
 1. Using rmarkdown and generating an html report  
-2. Filtering a large data sets (R data frame)  
+2. Filtering a large data set (R data frame)  
 3. Using the very popular `dplyr` package  
 
 ## R markdown  
-Like regular R scripts, rmarkdown scripts are just text files (with the .Rmd extension), differ from regular R scripts in three principal ways:  
+Like regular R scripts, rmarkdown scripts are just text files (with the .Rmd extension) that differ from regular R scripts in three principal ways:  
 
-1. In normal R scripts (.R files) text is interpreted by default _**as code**_, whilecomments have to be preceded by a '#'. Conversely, in rmarkdown scripts (.Rmd files) text is interpreted by default as _**formatted comments**_; code has to be enclosed in so-called 'chunks' that are are framed by three back-ticks (see code). RStudio highlights these code chunks with a grey background.  
+1. In normal R scripts (.R files) text is interpreted by default _**as code**_, while comments have to be preceded by a '#'. Conversely, in rmarkdown scripts (.Rmd files) text is interpreted by default as _**formatted comments**_; code has to be enclosed in so-called 'chunks' that are framed by three back-ticks (see code). RStudio highlights these code chunks with a grey background.  
 2. In rmarkdown scripts the output from the code chunks is shown within the script itself.  
 3. Rmarkdown is extremely useful in generating very professional reports in any of various common formats (e.g. html, Word, PDF, Powerpoint)  
 
 
 More information about rmarkdown can be found [here](https://rmarkdown.rstudio.com/).  
+
+Although the best resource for rmarkdown is [this online book](https://bookdown.org/yihui/rmarkdown/).  
+
+If you plan to use rmarkdown in your work I recommend that you print out a copy of the [rmarkdown cheatsheet](https://rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf) and hang it above your desk.  
 
 # Setup  
 ## Parameters + packages  
@@ -66,6 +70,7 @@ cat("Data file: <tt><b>", data.file, "</b></tt>\n")
 ```
 
 ## Read data  
+The 'read.table()' function is commonly used to import tabular data.
 ```{r read data}
 # only 141 headers, but
 m003 <- read.table(file=data.file, sep="\t", header=T, stringsAsFactors = FALSE)
@@ -102,12 +107,14 @@ data.frame(Column.No=seq_len(ncol(m003)), Column.Name=names(m003)) %>%
 ```{r message=FALSE, warning=FALSE}
 m003$gnomAD_exome_ALL[!is.na(m003$gnomAD_exome_ALL)] %>% 
   as.numeric(na.rm=T) %>%
-  hist(., main="Histogram of variant frequencies", xlab="Frequency")
+  hist(., main="Histogram of variant frequencies", xlab="Frequency", ylab="Count")
 ```
 
 
 Keep only rare variants (frequency of less than 0.0001)  
 ```{r}
+# Here we are using the 'filter()' function from the dplyr package to select rows based on specified criteria.
+# help(filter, package="dplyr")
 m003 %>% 
   filter(gnomAD_exome_ALL < 0.0001) %>% 
   nrow
@@ -116,6 +123,7 @@ m003 %>%
 
 Should include variants that have never been seen before (i.e. not in database, represented as NA in the data frame):
 ```{r}
+# A vertical line character (|) represents a boolean OR operator:
 m003 %>% 
   filter(gnomAD_exome_ALL < 0.0001 | is.na(gnomAD_exome_ALL)) %>% 
   nrow # 33953
@@ -136,7 +144,7 @@ interesting.variants <- m003 %>%
   filter(! ExonicFunc.refGene %in% c(NA, "synonymous SNV", "unknown", "nonframeshift insertion", "nonframeshift deletion" )) %>% 
   .$Gene.refGene %>% 
   as.character
-# 361
+# 493
 ```
 
 How many are there?
@@ -152,7 +160,7 @@ any(duplicated(interesting.variants))
 Remove duplicates:
 ```{r}
 interesting.variants <- unique(interesting.variants)
-length(interesting.variants) # 493
+length(interesting.variants) # 305
 ```
 
 Sort alphabetically:
