@@ -6,17 +6,23 @@
 # * General parameters
 # * Data formats: scalar, vector, matrix, data frame
 # * Variables
-# * Displaying the contents of variables
 # * R Functions
+# * Displaying the contents of variables
+# * Working with vectors
 # * Subsetting vectors
+# * Boolean/logical data
+# * Matrices
+# * Data frames
+# * Subsetting data frames
+# * Packages
 # * Date classes: number, string/character, boolean/logical
-# * Setting the working directory + listing local files
 # * Getting help
+# * Setting the working directory + listing local files
 
 #==============================================================================#
 
 #------------------------------------------------------------------------------#
-# To learn about RStudio: ####
+# Learn about RStudio: ####
 #------------------------------------------------------------------------------#
 # https://rstudio.com/
 
@@ -191,9 +197,10 @@ typeof(42)
 typeof(42L)
 
 #------------------------------------------------------------------------------#
+# Matrices ####
+#------------------------------------------------------------------------------#
 # Matrices are 2-dimensional arrays/tables where each item (cell) has to be of
 # the same data type:
-#------------------------------------------------------------------------------#
 mx1 <- matrix(1:24, ncol=6)
 mx1
 
@@ -219,9 +226,11 @@ mx1 + 1000
 t(mx1)
 
 #------------------------------------------------------------------------------#
+# Data frames ####
+#------------------------------------------------------------------------------#
 # Data frames are the most common container used to store data in R.
 # Each column can be a different data type:
-#------------------------------------------------------------------------------#
+
 df1 <- data.frame(Name=c("Jane", "Jack", "Jaim"),
                   Age=c(5, 12, 30),
                   Female=c(TRUE, FALSE, FALSE))
