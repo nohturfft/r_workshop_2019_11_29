@@ -45,9 +45,7 @@ list.files()
 #------------------------------------------------------------------------------#
 if (!require("base64enc")) install.packages("base64enc")
 if (!require("magrittr")) install.packages("magrittr")
-
-# library(wordcloud2, lib.loc=lib.loc)
-library(wordcloud)
+if (!require("magrittr")) install.packages("magrittr")
 
 #------------------------------------------------------------------------------#
 # Check what packages have been installed: ####
