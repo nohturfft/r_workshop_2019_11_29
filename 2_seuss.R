@@ -1,6 +1,6 @@
-#===============================================================================
-# R PROGRAMMING WORKSHOP - PART 2
-#===============================================================================
+#==============================================================================#
+# R PROGRAMMING WORKSHOP - PART 2 ####
+#==============================================================================#
 # LOADING DATA FROM FILES
 # ** reading lines of text
 # ** Reading words into a vector
@@ -8,16 +8,16 @@
 # ** Counting elements in a vector
 # ** Plotting a word cloud
 # ** Exercise
-#===============================================================================
+#==============================================================================#
 
-#-------------------------------------------------------------------------------
-# General parameters / settings for a script should go at the top:
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------#
+# General parameters / settings for a script should go at the top: ####
+#------------------------------------------------------------------------------#
 options(stringsAsFactors = FALSE)
 
-#-------------------------------------------------------------------------------
-# Working directory
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------#
+# Working directory ####
+#------------------------------------------------------------------------------#
 # ** In RStudio you can set the working directory using the 'Session' menu >
 #    'Set working directory'.
 
@@ -40,25 +40,26 @@ getwd()
 # Use list.files() to see the contents of the current working directory:
 list.files()
 
-#-------------------------------------------------------------------------------
-# Load some packages:
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------#
+# Load some packages: ####
+#------------------------------------------------------------------------------#
 if (!require("base64enc")) install.packages("base64enc")
 if (!require("magrittr")) install.packages("magrittr")
 
 # library(wordcloud2, lib.loc=lib.loc)
 library(wordcloud)
 
-#-------------------------------------------------------------------------------
-# Check what packages have been installed:
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------#
+# Check what packages have been installed: ####
+#------------------------------------------------------------------------------#
 installed.packages() %>% row.names()
 
 
-#-------------------------------------------------------------------------------
-# Reading data from files using 'readLines()': reading lines of text
+#------------------------------------------------------------------------------#
+# Reading data from files using 'readLines()': reading lines of text ####
+#------------------------------------------------------------------------------#
 # (not used much in Bioinformatics really)
-#-------------------------------------------------------------------------------
+
 # You can select a file programmatically [e.g. by copying from the console after
 # list.files() ]
 my.file <- "data/green_eggs_and_ham.txt"
@@ -81,9 +82,9 @@ txt
 # characters:
 cat(txt, sep="\n")
 
-#-------------------------------------------------------------------------------
-# Reading individual words into a vector using the 'scan()' command:
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------#
+# Reading individual words into a vector using the 'scan()' command: ####
+#------------------------------------------------------------------------------#
 # The approach is useful to load gene symbols!
 txt <- scan(file="data/green_eggs_and_ham.txt", what=character())
 txt
@@ -101,9 +102,9 @@ sort(txt)
 # Functions can be called inside other functions - "nesting":
 length(unique(txt)) # 73
 
-#-------------------------------------------------------------------------------
-# magrittr pipes instead of nesting:
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------#
+# magrittr pipes instead of nesting: ####
+#------------------------------------------------------------------------------#
 # Unix/Linux-like pipes have become more popular -
 # the '%>%' command from the R magrittr package sends the result of one command
 # on to the next
@@ -118,9 +119,9 @@ print(txt.up)
 txt.lo <- txt %>% tolower
 print(txt.lo)
 
-#-------------------------------------------------------------------------------
-# Saving a text vector in a file:
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------#
+# Saving a text vector in a file: ####
+#------------------------------------------------------------------------------#
 # First check that you are in the right working directory to save the file:
 getwd()
 
@@ -139,9 +140,9 @@ list.files()
 # Clicking on the new file in the 'Files' tab will open it in R for you to
 # check.
 
-#-------------------------------------------------------------------------------
-# Counting elements in a vector:
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------#
+# Counting elements in a vector: ####
+#------------------------------------------------------------------------------#
 # The 'table' function counts how often each element occurs in a vector:
 ta <- txt %>% toupper %>% table
 ta
@@ -165,9 +166,9 @@ head(df, 10)
 # A nicer way to look at data frames:
 View(df)
 
-#-------------------------------------------------------------------------------
-# Barplots:
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------#
+# Barplots: ####
+#------------------------------------------------------------------------------#
 barplot(table(txt.lo[1:20]), horiz=TRUE, las=1)
 
 # Most people these days use the ggplot2 package to generate plots in R.
@@ -180,9 +181,9 @@ ggplot(data=head(df, 10), aes(x=word, y=count)) +
     title="Frequency of some words: GREEN EGGS AND HAM",
     subtitle="by Dr Seuss")
 
-#-------------------------------------------------------------------------------
-# Plotting a word cloud:
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------#
+# Plotting a word cloud: ####
+#------------------------------------------------------------------------------#
 if (!require(wordcloud2)) install.packages("wordcloud2"); library(wordcloud)
 help(wordcloud, package="wordcloud")
 set.seed(1234)
@@ -206,16 +207,16 @@ wordcloud(words=df$word, freq=df$count, colors=brewer.pal(8, "Set2"))
 wordcloud(words=df$word, freq=df$count, colors=brewer.pal(8, "Accent"))
 
 
-#-------------------------------------------------------------------------------
-# Save wordcloud as PDF or PNG or copy to the clipboard:
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------#
+# Save wordcloud as PDF or PNG or copy to the clipboard: ####
+#------------------------------------------------------------------------------#
 # Click the "Export" button in the RStudio 'Plots' tab on the bottom right and
 # follow the instructions.
 
 
-#-------------------------------------------------------------------------------
-# ********************************  EXERCISE!!  ********************************
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------#
+# EXERCISE ####
+#------------------------------------------------------------------------------#
 # Create a text file with 'file.edit' and analyze your own poem or other text:
 file.edit("abc.txt")
 
